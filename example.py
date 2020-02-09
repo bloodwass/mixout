@@ -33,7 +33,7 @@ def main():
     print(model)
     model.load_state_dict(model_config)
     
-    # From now on, we are going to replcace dropout with mixout.
+    # From now on, we are going to replace dropout with mixout.
     # Since dropout drops all parameters outgoing from the dropped neuron,
     # mixout mixes the parameters of the nn.Linear right after the nn.Dropout.
     for name, module in model.named_modules():
