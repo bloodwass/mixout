@@ -61,10 +61,10 @@ class Mixout(InplaceFunction):
         
     @staticmethod
     def backward(ctx, grad_output):
-        if ctx.p > 0 and ctx.train:
-            return grad_output * ctx.noise, None, None, None, None, None, None
+        if ctx.p > 0 and ctx.training:
+            return grad_output * ctx.noise, None, None, None, None
         else:
-            return grad_output, None, None, None, None, None, None
+            return grad_output, None, None, None, None
 
 def mixout(input, target=None, p=0.0, training=False, inplace=False):
     return Mixout.apply(input, target, p, training, inplace)
