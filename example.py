@@ -65,7 +65,7 @@ def main():
         loss.backward()
         optimizer.step()
         print(loss.item())
-      
+    
 if __name__ == "__main__":
     main()
     
