@@ -43,11 +43,28 @@ def main():
             target_state_dict = module.state_dict()
             bias = True if module.bias is not None else False
             new_module = MixLinear(module.in_features, module.out_features, 
-                                   bias, target_state_dict['weight'], 0.1)
+                                   bias, target_state_dict['weight'], 0.9)
             new_module.load_state_dict(target_state_dict)
             setattr(model, name, new_module)
     print("After applying mixout")
     print(model)
+    
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    n_gpu = torch.cuda.device_count()
+    model.to(device=device)
+    if n_gpu > 1:
+        model = nn.DataParallel(model)
+    model.train()
+    optimizer = torch.optim.Adam(model.parameters(), 0.001)
+    
+    for _ in range(10):
+        optimizer.zero_grad()
+        x = torch.randn(16, 784).to(device)
+        y = torch.ones(16, dtype=torch.long).to(device)
+        loss = torch.nn.functional.cross_entropy(model(x), y)
+        loss.backward()
+        optimizer.step()
+        print(loss.item())
       
 if __name__ == "__main__":
     main()
