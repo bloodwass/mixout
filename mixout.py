@@ -31,9 +31,6 @@ class Mixout(InplaceFunction):
         ctx.p = p    
         ctx.training = training
         
-        if ctx.p == 0 or not ctx.training:
-            return input
-        
         if target is None:
             target = cls._make_noise(input)
             target.fill_(0)
@@ -45,16 +42,19 @@ class Mixout(InplaceFunction):
         else:
             output = input.clone()
         
+        if ctx.p == 0 or not ctx.training:
+            return output
+        
         ctx.noise = cls._make_noise(input)
         if len(ctx.noise.size()) == 1:
             ctx.noise.bernoulli_(1 - ctx.p)
         else:
             ctx.noise[0].bernoulli_(1 - ctx.p)
-            ctx.noise = ctx.noise[0].repeat(input.size()[0], 1)
+            ctx.noise = ctx.noise[0].repeat(input.size()[0], *([1] * (len(input.size())-1)))
         ctx.noise.expand_as(input)
         
         if ctx.p == 1:
-            output = target
+            output = target.clone()
         else:
             output = ((1 - ctx.noise) * target + ctx.noise * output - ctx.p * target) / (1 - ctx.p)
         return output
