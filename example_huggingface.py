@@ -35,8 +35,8 @@ def demo(model_name: str = 'bert-base-uncased') -> None:
         In all other cases, returns the module unchanged.
         
             params:
-                module (nn.Module)     : a module to replace for Mixout
-                mixout_prob (float)    : the desired Mixout probability
+                module (nn.Module)    : a module to replace for Mixout
+                mixout_prob (float)   : the desired Mixout probability
             
             returns:
                 module (nn.Module)    : the module set up for use with Mixout
@@ -44,9 +44,9 @@ def demo(model_name: str = 'bert-base-uncased') -> None:
         if isinstance(module, nn.Dropout):
             return nn.Dropout(0)
         elif isinstance(module, nn.Linear):
-            target_state_dict     = deepcopy(module.state_dict())
+            target_state_dict   = deepcopy(module.state_dict())
             bias                = True if module.bias is not None else False
-            new_module              = MixLinear(
+            new_module          = MixLinear(
                                     module.in_features,
                                     module.out_features,
                                     bias,
@@ -63,11 +63,11 @@ def demo(model_name: str = 'bert-base-uncased') -> None:
         Recursively sets attributes for objects with children.
         
             params:
-                obj (any)    : the object with children whose attribute is to be set
-                attr (str)    : the (nested) attribute of the object, with levels indicated by '.'
+                obj (any)   : the object with children whose attribute is to be set
+                attr (str)  : the (nested) attribute of the object, with levels indicated by '.'
                               for instance attr='attr1.attr2' sets the attr2 of obj.attr1 to
                               the passed value
-                value (any)    : what to set the attribute to
+                value (any) : what to set the attribute to
         '''
         attr = attr.split('.', 1)
         if len(attr) == 1:
