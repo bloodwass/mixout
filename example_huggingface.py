@@ -1,3 +1,9 @@
+##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## This example script created by Michael Wilson
+## Department of Linguistics, Yale University
+## Email: michael.a.wilson@yale.edu
+## GitHub: mawilson1234
+##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 import sys
 
 import torch
@@ -78,6 +84,10 @@ def demo(model_name: str = 'bert-base-uncased') -> None:
     print(model)
 
 if __name__ == '__main__':
+	'''
+	Pass a pretrained model name after the script 
+	name when calling to see a demo for that model
+	'''
     if len(sys.argv) > 1:
         demo(sys.argv[-1])
     else:
