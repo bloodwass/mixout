@@ -70,15 +70,18 @@ class Mixout(InplaceFunction):
         
         return output
 
-        
 
-        
     @staticmethod
-    def backward(ctx, grad_output):
+    def backward(ctx, grad_output:torch.Tensor) -> Optional[torch.Tensor]:
         if ctx.p > 0 and ctx.training:
             return grad_output * ctx.noise, None, None, None, None
         else:
             return grad_output, None, None, None, None
 
-def mixout(input, target=None, p=0.0, training=False, inplace=False):
+def mixout(input:torch.Tensor, 
+           target:Optional["OrderedDict[str, torch.Tensor]"]=None, 
+           p:float=0.0, 
+           training:bool=False, 
+           inplace:bool=False) -> torch.Tensor:
+
     return Mixout.apply(input, target, p, training, inplace)
