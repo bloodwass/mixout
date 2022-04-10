@@ -1,6 +1,8 @@
 # Implementation of Mixout with PyTorch
 This repository contains a PyTorch code of mixout. This technique regularizes learning to minimize the deviation from the target parameters. For more detailed description of mixout, see ["Mixout: Effective Regularization to Finetune Large-scale Pretrained Language Models"](https://arxiv.org/abs/1909.11299).       
 
+![Mixout](imgs/mixout.png "Mixout")
+
 # How to use
 There is an example code (**example.py**) about applying mixout to a model. In **mixout.py**, you can find the functional version of mixout similar to *torch.nn.functional.dropout*. The module version of mixout is available in **mixlinear.py** as well, but it is quite different compared to *torch.nn.Dropout*. I highly recommend users to read **example.py**.   
 
