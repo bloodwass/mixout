@@ -1,2 +1,2 @@
-from mixlinear import MixLinear
-from mixout import Mixout
+from .mixlinear import MixLinear
+from .mixout import Mixout
