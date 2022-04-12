@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
+from mixout import MixLinear
 
-from module import MixLinear
 
 class FullyConnected(nn.Module):
     def __init__(self):

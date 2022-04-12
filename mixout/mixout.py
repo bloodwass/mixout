@@ -7,6 +7,9 @@
 ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 import torch
 from torch.autograd.function import InplaceFunction
+from typing import Optional
+from collections import OrderedDict
+
 
 class Mixout(InplaceFunction):
     # target: a weight tensor mixes with a input tensor
@@ -17,17 +20,24 @@ class Mixout(InplaceFunction):
     # Dropout is equivalent to the case of target=None. 
     # I modified the code of dropout in PyTorch. 
     @staticmethod
-    def _make_noise(input):
+    def _make_noise(input:torch.Tensor) -> torch.Tensor:
         return input.new().resize_as_(input)
 
     @classmethod
-    def forward(cls, ctx, input, target=None, p=0.0, training=False, inplace=False):
+    def forward(cls, 
+                ctx, 
+                input:torch.Tensor, 
+                target:Optional["OrderedDict[str, torch.Tensor]"]=None, 
+                p:float=0.0, 
+                training:bool=False, 
+                inplace:bool=False) -> torch.Tensor:
+
         if p < 0 or p > 1:
-            raise ValueError("A mix probability of mixout has to be between 0 and 1,"
-                             " but got {}".format(p))
+            raise ValueError(f"A mix probability of mixout has to be between 0 and 1,  but got {p}")
+
         if target is not None and input.size() != target.size():
-            raise ValueError("A target tensor size must match with a input tensor size {},"
-                             " but got {}". format(input.size(), target.size()))
+            raise ValueError(f"A target tensor size must match with a input tensor size {input.size()}, but got {target.size()}")
+        
         ctx.p = p    
         ctx.training = training
         
@@ -57,14 +67,21 @@ class Mixout(InplaceFunction):
             output = target.clone()
         else:
             output = ((1 - ctx.noise) * target + ctx.noise * output - ctx.p * target) / (1 - ctx.p)
-        return output
         
+        return output
+
+
     @staticmethod
-    def backward(ctx, grad_output):
+    def backward(ctx, grad_output:torch.Tensor) -> Optional[torch.Tensor]:
         if ctx.p > 0 and ctx.training:
             return grad_output * ctx.noise, None, None, None, None
         else:
             return grad_output, None, None, None, None
 
-def mixout(input, target=None, p=0.0, training=False, inplace=False):
+def mixout(input:torch.Tensor, 
+           target:Optional["OrderedDict[str, torch.Tensor]"]=None, 
+           p:float=0.0, 
+           training:bool=False, 
+           inplace:bool=False) -> torch.Tensor:
+
     return Mixout.apply(input, target, p, training, inplace)

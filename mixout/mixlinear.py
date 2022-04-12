@@ -7,13 +7,15 @@
 ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 import math
 import torch
-import torch.nn as nn
+from torch import nn
 import torch.nn.init as init
 import torch.nn.functional as F
-
 from torch.nn import Parameter
-
 from mixout import mixout
+from typing import Optional
+from collections import OrderedDict
+
+
 
 class MixLinear(torch.nn.Module):
     __constants__ = ['bias', 'in_features', 'out_features']
@@ -21,7 +23,13 @@ class MixLinear(torch.nn.Module):
     # is equivalent to nn.Sequential(nn.Linear(m, n), nn.Dropout(p), nn.Linear(m', n')).
     # If you want to change a dropout layer to a mixout layer, 
     # you should replace nn.Linear right after nn.Dropout(p) with Mixout(p) 
-    def __init__(self, in_features, out_features, bias=True, target=None, p=0.0):
+    def __init__(self, 
+                in_features:int, 
+                out_features:int, 
+                bias:bool=True, 
+                target:Optional["OrderedDict[str, torch.Tensor]"]=None, 
+                p:float=0.0) -> None:
+
         super(MixLinear, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
@@ -30,22 +38,26 @@ class MixLinear(torch.nn.Module):
             self.bias = Parameter(torch.Tensor(out_features))
         else:
             self.register_parameter('bias', None)
+
         self.reset_parameters()
         self.target = target
         self.p = p
+
+        if self.p < 0 or self.p > 1:
+            raise ValueError(f"A mix probability of mixout has to be between 0 and 1,  but got {self.p}")
     
-    def reset_parameters(self):
+    def reset_parameters(self) -> None:
         init.kaiming_uniform_(self.weight, a=math.sqrt(5))
         if self.bias is not None:
             fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
             bound = 1 / math.sqrt(fan_in)
             init.uniform_(self.bias, -bound, bound)
             
-    def forward(self, input):
+    def forward(self, input:torch.Tensor) -> torch.Tensor:
         return F.linear(input, mixout(self.weight, self.target, 
                                       self.p, self.training), self.bias)
 
     def extra_repr(self):
-        type = 'drop' if self.target is None else 'mix' 
-        return '{}={}, in_features={}, out_features={}, bias={}'.format(type+"out", self.p,
-            self.in_features, self.out_features, self.bias is not None)
+        type_ = 'drop' if self.target is None else 'mix'
+        type_ += "out" 
+        return f'{type_}={self.p}, in_features={self.in_features}, out_features={self.out_features}, bias={self.bias is not None}'
