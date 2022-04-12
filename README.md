@@ -4,7 +4,10 @@ This repository contains a PyTorch code of mixout. This technique regularizes le
 ![Mixout](imgs/mixout.png "Mixout")
 
 # How to use
-There is an example code (**example.py**) about applying mixout to a model. In **mixout.py**, you can find the functional version of mixout similar to *torch.nn.functional.dropout*. The module version of mixout is available in **mixlinear.py** as well, but it is quite different compared to *torch.nn.Dropout*. I highly recommend users to read **example.py**.   
+
+There is an example code (**example.py**) about applying mixout to a model. In **mixout.py**, you can find the functional version of mixout similar to *torch.nn.functional.dropout*. The module version of mixout is available in **module.py** as well, but it is quite different compared to *torch.nn.Dropout*. I highly recommend users to read **example.py**.
+
+Thanks to Michael Wilson, there is also an example of applying mixout to a pretrained model from Huggingface in **example_huggingface.py**. Because of how models on Huggingface are structured, this works slightly differently from **example.py**.
 
 # Reference
 Cheolhyoung Lee, Kyunghyun Cho, and Wanmo Kang, Mixout: Effective regularization to Finetune Large-scale Pretrained Language Models, _International Conference on Learning Representations_ (2020).
