@@ -12,7 +12,7 @@ import torch.nn.functional as F
 from torch.nn import Parameter
 from typing import Optional
 from collections import OrderedDict
-from functional import mixout
+from .functional import mixout
 
 
 
