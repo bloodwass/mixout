@@ -77,11 +77,3 @@ class Mixout(InplaceFunction):
             return grad_output * ctx.noise, None, None, None, None
         else:
             return grad_output, None, None, None, None
-
-def mixout(input:torch.Tensor, 
-           target:Optional["OrderedDict[str, torch.Tensor]"]=None, 
-           p:float=0.0, 
-           training:bool=False, 
-           inplace:bool=False) -> torch.Tensor:
-
-    return Mixout.apply(input, target, p, training, inplace)
