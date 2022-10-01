@@ -9,6 +9,8 @@ There is an example code (**example.py**) about applying mixout to a model. In *
 
 Thanks to Michael Wilson, there is also an example of applying mixout to a pretrained model from Huggingface in **example_huggingface.py**. Because of how models on Huggingface are structured, this works slightly differently from **example.py**.
 
+For better usage of the library, Vadim makes this repo as a package, also he adds the figure of Mixout for faster understanding the concept behind Mixout. Also, he add the typing library to emphasize what input types the library expects.
+
 # Reference
 Cheolhyoung Lee, Kyunghyun Cho, and Wanmo Kang, Mixout: Effective regularization to Finetune Large-scale Pretrained Language Models, _International Conference on Learning Representations_ (2020).
 
