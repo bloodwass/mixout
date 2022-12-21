@@ -54,7 +54,7 @@ def demo(model_name: str = 'bert-base-uncased') -> None:
                                     mixout_prob
                                 )
             new_module.load_state_dict(target_state_dict)
-            return new_module
+            return module, new_module
         else:
             return module
     
@@ -71,7 +71,12 @@ def demo(model_name: str = 'bert-base-uncased') -> None:
         '''
         attr = attr.split('.', 1)
         if len(attr) == 1:
-            setattr(obj, attr[0], value)
+            if not isinstance(value, tuple):
+                setattr(obj, attr[0], value)
+            elif isinstance(value, tuple) and 'intermediate' in obj._get_name().lower():
+                setattr(obj, attr[0], value[0])
+            else:
+                setattr(obj, attr[0], value[1])  
         else:
             recursive_setattr(getattr(obj, attr[0]), attr[1], value)
     
